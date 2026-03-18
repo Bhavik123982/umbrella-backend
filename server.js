@@ -3,7 +3,7 @@ const cors = require("cors");
 
 const app = express();
 
-// 1. MUST HAVE: Enable CORS so your Netlify frontend can talk to this backend
+// Enable CORS so your Netlify site can talk to this backend
 app.use(cors());
 app.use(express.json());
 
@@ -44,7 +44,12 @@ function generateTask2(level) {
   }.`;
 }
 
-// Routes
+// FIX: Added a root route so you don't see "Cannot GET /"
+app.get("/", (req, res) => {
+  res.send("Umbrella Academy API is online and ready!");
+});
+
+// Routes for the app
 app.get("/task1/:level", (req, res) => {
   res.json({ prompt: generateTask1(req.params.level) });
 });
@@ -53,8 +58,7 @@ app.get("/task2/:level", (req, res) => {
   res.json({ prompt: generateTask2(req.params.level) });
 });
 
-// 2. MUST HAVE: Dynamic Port for Render
-// Render assigns a random port; this line ensures your app listens to it.
+// Use the Port Render provides or default to 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
